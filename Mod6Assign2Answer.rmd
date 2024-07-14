@@ -1,0 +1,83 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 6 - Assignment 2
+## Simis, Kathleen
+### Statistical Analyses
+```{r}
+library(tidyverse)
+library(readxl)
+RespiratoryExchangeSample <- read_excel("RespiratoryExchangeSample.xlsx")
+Advertising <- read_csv("Advertising.csv")
+Insurance <- read_csv("Insurance.csv")
+Perceptions <- read_excel("Perceptions.xlsx")
+```
+### Regression and Correlation
+Regression analysis is a statistical method that allows you to examine the relationship between two or more variables of interest. Correlation analysis is a method of statistical evaluation used to study the strength of a relationship between two, numerically measured, continuous variables (e.g. height and weight). This particular type of analysis is useful when a researcher wants to establish if there are possible connections between variables.
+### Insurance Costs
+We would like to determine if we can accurately predict insurance costs based upon the factors included in the data. We would also like to know if there are any connections between variables (for example, is age connected or correlated to charges).
+### Correlations of BMI, Age, Children and Cost
+```{r}
+Insurance2 <- select(Insurance, age, bmi, children, charges)
+cor(Insurance2, use="complete.obs",method="pearson")
+Corr_matrix <- cor(Insurance2, use="complete.obs",method="pearson")
+library(corrplot)
+library(RColorBrewer)
+corrplot(Corr_matrix, type="upper", order="hclust",
+col=brewer.pal(n=8, name="RdYlBu"))
+```
+As seen in the chart above, outside of the perfect correlation visualized at the intersection of like variables (children and children, bmi and bmi, age and age, and charges and charges), the two variables with the highest correlation are age and charges, followed by bmi and charges. The correlation for all combinations of variables falls between 0 and .5, indicating a weak to moderate correlation. 
+### Regression Analysis
+```{r}
+fit2 <- lm(charges ~ age + bmi + children, data=Insurance2)
+summary (fit2)
+```
+As seen in the chart above, all three variables were found to be significant. Children was less significant than age and bmi, though was still <.05. Children also had the highest coefficient estimate, indicating it had the largest impact on charges. 
+```{r}
+Insurance <- mutate(Insurance, gender=ifelse(sex=="female",1,0))
+Insurance <- mutate(Insurance, smoker2=ifelse(smoker=="yes",1,0))
+Insurance3 <- select(Insurance, age, bmi, children, charges, gender, smoker2)
+fit3 <- lm(charges ~ age + bmi + children + gender + smoker2, data=Insurance3)
+summary (fit3)
+```
+Gender was not found to be significant, though smoking was. Smoking also had a very large estimated coefficient, indicating a significant impact on charges. 
+### Group Comparisons with T-Tests
+The t-test is used to compare the values of the means from two samples and test whether it is likely that the samples are from populations having different mean values. This is often used to compare 2 groups to see if there are any significant differences between these groups.
+### Caffeine Impacts on Respiratory Exchange Ratio
+A study of the effect of caffeine on muscle metabolism used volunteers who each underwent arm exercise tests. Half the participants were randomly selected to take a capsule containing pure caffeine one hour before the test. The other participants received a placebo capsule. During each exercise the subject's respiratory exchange ratio (RER) was measured. (RER is the ratio of CO2 produced to O2 consumed and is an indicator of whether energy is being obtained from carbohydrates or fats). The question you are trying to answer is whether caffeine impacts RER during exercise.
+```{r}
+summary(RespiratoryExchangeSample)
+t.test(RespiratoryExchangeSample$Caffeine, RespiratoryExchangeSample$Placebo)
+```
+Given the p-value, this t-test yielded statistically significant results indicating there was a difference between the two groups. 
+### Impact of Advertising
+You are a marketing researcher conducting a study to understand the impact of a new marketing campaign. To test the new advertisements, you conduct a study to understand how consumers will respond based on see the new ad compared to the previous campaign. One group will see the new ad and one group will see the older ads. They will then rate the ad on a scale of 0 to 100 as a percentage of purchase likelihood based on the ad. The question you are trying to answer is whether to roll out the new campaign or stick with the current campaign.
+```{r}
+summary(Advertising)
+t.test(Rating ~ Group, Advertising, var.equal=TRUE)
+```
+As seen in the table above, the p-value is equal to .2113, indicating that there is not a statistically significant difference between groups. As such, I would not recommend moving forward witht he ad campaign. 
+### ANOVA
+An ANOVA test is a way to find out if survey or experiment results are significant. In other words, they help you to figure out if you need to reject the null hypothesis or accept the alternate hypothesis. Basically, you’re testing groups to see if there’s a difference between them. Examples of when you might want to test different groups:
+Module 6: Assignment #2
+- A group of psychiatric patients are trying three different therapies: counseling, medication and biofeedback. You want to see if one therapy is better than the others.
+- A manufacturer has two different processes to make light bulbs. They want to know if one process is better than the other.
+- Students from different colleges take the same exam. You want to see if one college outperforms the other.
+### Perceptions of Social Media Profiles
+This study examines how certain information presented on a social media site might influence perceptions of trust, connectedness and knowledge of the profile owner. Specifically, participants were shown weak, average and strong arguments that would influence their perceptions of the above variables. Using the dataset provided, the following code runs an ANOVA with post-hoc analyses to understand argument strength impacts on perceptions.
+```{r}
+aov1 <- aov(Trust ~ Argument, data=Perceptions)
+summary(aov1)
+aov2 <- aov(Connectedness ~ Argument, data=Perceptions)
+summary(aov2)
+aov3 <- aov(Knowledge ~ Argument, data=Perceptions)
+summary(aov3)
+```
+Trust and Connectedness were significantly different from Argument, while Knowledge was not. 
+```{r}
+TukeyHSD(aov1)
+TukeyHSD(aov2)
+```
+Per the above chart, there was a significant difference (p<.05) between weak and average and weak and strong for the first and second models, though not a significant difference between strong and average for either. 

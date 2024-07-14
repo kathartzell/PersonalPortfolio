@@ -1,0 +1,53 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 3 Assignment 1
+## Simis, Kathleen
+### Data Visualization
+
+In this project, I will be using the datasets containing candy rankings and production that can be found on the Canvas course website to explore different ggplot functions for visualizing data. 
+
+```{r}
+library(tidyverse)
+candy_data <- read_csv("candy_data.csv")
+candy_production <- read_csv("candy_production.csv", 
+    col_types = cols(observation_date = col_date(format = "%Y-%m-%d")))
+```
+
+#### Visualization with Scatterplots (geom_point)
+
+```{r}
+ggplot(data=candy_data, aes(x=sugarpercent, y=pricepercent, label = competitorname)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  geom_text(check_overlap = T, vjust = "bottom", nudge_y = 0.01, angle = 30, size = 2) +
+  labs(title="Sugar by Price Scatterplot", x = "Sugar content (percentile)", y = "Price (percentile)")
+```
+
+Based on the above visualization, we can see that the candy with the highest sugar content is Reese O's Stuffed with Pieces. The cheapest candy appears to be Tootsie Roll Midgies. Additionally, the candy that appears to maximize the most sugar for the lowest cost is Skittles Original, while Milky Way Simply Caramel seems to have the highest sugar content amongst the more expensive candies. 
+
+####  Line Chart of Candy Production
+
+Now I will be using the candy production dataset to see how monthly candy production has changed
+over the years compared to 2012.
+
+```{r}
+ggplot(data=candy_production, aes(x=observation_date, y=IPG3113N)) +
+  geom_line() +
+  geom_smooth() +
+  labs(title="Monthly Candy Production", x = "Year", y = "As percent of 2012 Production")
+```
+
+#### Bar Chart of Ingredients
+
+```{r}
+ggplot(data=candy_data, aes(chocolate)) +
+  geom_bar() 
+candyFeatures <- candy_data %>% select(2:10) 
+candyFeatures[] <- lapply(candyFeatures, as.logical)
+ggplot(data=candyFeatures, aes(chocolate)) +
+  geom_bar() 
+```
+

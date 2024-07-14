@@ -1,0 +1,54 @@
+# Module 5 - Assignment 2
+
+## Simis, Kathleen
+
+### More Data Wrangling
+
+```{r}
+library(tidyverse)
+tuition_cost <- read_csv("tuition_cost.csv")
+```
+
+### Part 1 – Creating tidy data using tidyr
+
+```{r}
+Tuition <- pivot_longer (tuition_cost, c('2017','2018','2019','2020'), names_to= "year", values_to = "tuition") 
+Tuition <- separate (Tuition, tuition, into = c ("InState", "Outstate"), sep= '/', convert=TRUE)
+```
+
+### Part 2 – North Carolina Schools
+
+```{r}
+Public <- filter (Tuition, state == "North Carolina" & degree_length == "4 Year" & type == "Public")
+ggplot(data=Public, aes(x=year, y=InState, color=name)) +
+  geom_point() +
+  labs(title="In-State Tuition for North Carolina Schools", x= "Year", y= "Cost in $") +
+  theme(legend.title=element_blank()) 
+```
+
+```{r}
+UNC <- filter(Public,grepl("University of North Carolina",name))
+ggplot(data=UNC, aes(x=year, y=InState, color=name)) +
+  geom_point() +
+  labs(title="In-State Tuition for UNC Schools", x= "Year", y= "Cost in $") +
+  theme(legend.title=element_blank(), legend.position="bottom") +
+  guides(colour = guide_legend(nrow = 4))
+```
+
+### Part 3 - Additional Universities
+
+```{r}
+Colorado <- filter (Tuition, state == "Colorado" & degree_length == "4 Year" & type == "Public")
+ggplot(data=Colorado, aes(x=year, y=Outstate, color=name)) +
+  geom_point() +
+  labs(title="Out of State Tuition for Colorado Schools", x= "Year", y= "Cost in $") +
+  theme(legend.title=element_blank()) 
+```
+
+```{r}
+SC <- filter (Tuition, state == "South Carolina" & degree_length == "2 Year" & type == "Public")
+ggplot(data=SC, aes(x=year, y=InState, color=name)) +
+  geom_point() +
+  labs(title="In-State Tuition for South Carolina Schools", x= "Year", y= "Cost in $") +
+  theme(legend.title=element_blank())
+```

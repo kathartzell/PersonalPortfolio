@@ -1,0 +1,50 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 6 - Assignment 1
+
+## Simis, Kathleen
+
+### Lubridate
+
+```{r}
+library(tidyverse)
+library(lubridate)
+Appointments <- read_csv("Appointments.csv")
+```
+### Working with Dates
+
+```{r}
+Appointments <- mutate(Appointments, 'ReservationYear'=2019)
+Appointments <- mutate(Appointments, 'ReservationDate'= make_date (month=ReservationMonth, day=ReservationDay, year=ReservationYear))
+Appointments <- mutate(Appointments, 'CreationDate'= make_date (month=CreationMonth, day=CreationDay, year=CreationYear))
+Appointments <- mutate(Appointments, 'ReservationSpan' = ReservationDate - CreationDate)
+```
+
+### Exploratory Analysis
+
+```{r}
+summary(Appointments)
+Appointments <- mutate(Appointments, 'ReservationSpan'= str_remove(ReservationSpan,' days'))
+Appointments <- mutate(Appointments, 'ReservationSpan' = as.numeric(ReservationSpan))
+summary(Appointments)
+```
+
+The average time between appointment creation and the actual reservation date is 38.53 days
+The max time is 207
+The min time is 1
+
+```{r}
+cor(Appointments $ ReservationSpan, Appointments $ Show)
+```
+
+ReservationSpan and Show are not highly correlated
+
+```{r}
+ggplot(data=Appointments, aes(Show)) +
+  geom_bar()
+```
+
+Per the bar chart, most people did make their reservation

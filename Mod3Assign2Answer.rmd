@@ -1,0 +1,50 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 3 - Assignment 2
+## Simis, Kathleen
+### Exploratory Data Analysis
+
+```{r}
+library(tidyverse)
+```
+
+#### Diamond Color and Price
+
+```{r}
+ggplot(data=diamonds, aes(x=carat, y=price)) +
+  geom_point()
+```
+1.) What do you notice from the scatterplot as the carat size increases?
+As carat size increases, price also tends to increase. 
+2.) From the scatterplot, what carats are most represented within the diamonds dataset?
+This dataset is largely made of diamonds that are less than 2.5 carats. 
+
+```{r}
+ggplot(data=diamonds, aes(x=color, y=price)) +
+  geom_point()
+```
+This plot shows that there are diamonds of all colors on the high and low end of the cost spectrum, though it does not show a trend one way or the other because a scatterplot is not well suited for categorical data, such as the color of a diamond. 
+
+```{r}
+ggplot(data=diamonds, aes(x=carat, y=price, color=color)) +
+  geom_point()
+```
+
+As you can see from the chart above, diamonds with a color grade closer to the beginning of th alphabet (D, E, or F) tend to be more expensive than similar carat sized diamonds with a color grade further along in the alphabet (G, H, I, J). That means that color does impact price, with a color grade closer to D being associated with a higher value. Interestingly, it also appears that color grades close to D tend to be more prevalent in smaller carat sizes (as shown by the larger concentration of purple data points on the left side of the graph). Of the data points for diamonds of 3 carats or more, most of the data points tend to be of G, H, I, or J color grade, indicating that larger diamonds are more likely to have these color grades compared to D, E, or F. 
+
+```{r}
+dsample <- diamonds[sample(nrow(diamonds), 100),]
+ggplot(data=dsample, aes(x=carat, y=price, color=color)) +
+  geom_point() +
+  geom_smooth(method=lm)
+```
+This chart shows that color grade J diamons do tend to the most affordable, though F and not D appears to be the most expensive.
+
+```{r}
+ggplot(data=dsample, aes(price, fill=color))+
+  geom_histogram(binwidth=1000)
+```
+This graph shows.....

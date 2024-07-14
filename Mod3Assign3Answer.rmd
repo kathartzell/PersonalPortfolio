@@ -1,0 +1,63 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 3 - Assignment 3
+
+## Simis, Kathleen
+
+### More Practice with Plots
+
+```{r}
+library(tidyverse)
+GOOG <- read_csv("GOOG.csv")
+```
+
+#### Google Stock Price Plots
+
+The following is an analysis of Google’s stock price from October of 2019 to October of 2020. This will include a scatter, line, bar, histogram and boxplot. All the plots represent the closing price on the dates listed on the x-axis.
+
+```{r Basic Plots}
+ggplot(data=GOOG , aes(x=Date, y=Close)) +
+  geom_point()
+ggplot(data=GOOG, aes(x=Date, y=Close)) +
+  geom_line()
+ggplot(data=GOOG, aes(x=Date, y=Close)) +
+  geom_col()
+ggplot(data=GOOG, aes(Close)) +
+  geom_histogram()
+ggplot(data=GOOG, aes(Close)) +
+  geom_boxplot()
+ggplot(data=GOOG, aes(x = Date, y = Close)) +
+  geom_line() +
+  geom_point()
+```
+
+Of all of the above plots, I feel that the line graph is the easiest to read. While similar information can be seen in the scatterplot and in the line graph with dots, I don't feel like the dots are neccessary, and the simplicity of the line is better able to capture the general change over time. 
+
+#### Google Stock Daily Price Comparisons
+
+```{r Advanced Plots}
+ggplot(GOOG) +
+  geom_line(aes(x=Date, y=High, color="High")) +
+  geom_line(aes(x=Date, y=Low, color="Low"))
+ggplot(GOOG) +
+  geom_line(aes(x=Date, y=Open, color="Open")) +
+  geom_line(aes(x=Date, y=Close, color="Close"))
+ggplot(GOOG, aes(x=Date, y=Close)) +
+  geom_area(color="black",fill="blue",alpha=.2)
+ggplot(GOOG, aes(x=Date, y=Open)) +
+  geom_area(color="blue",fill="green",alpha=.1)
+MayPrice <- subset(GOOG, Date > "2020-04-30" & Date < "2020-06-01")
+ggplot(MayPrice, aes(x=Date, y=Close)) +
+  geom_point() +
+  geom_text(aes(label=round(Close)), size=3, vjust=-1)
+AprilPrice <- subset(GOOG, Date > "2020-03-31" & Date < "2020-05-01")
+ggplot(AprilPrice, aes(x=Date, y=Open)) +
+  geom_point() +
+  geom_text(aes(label=round(Open)), size=2, vjust=-1.5)
+```
+
+
+
